@@ -1,0 +1,27 @@
+#ifndef __GPIO_H__
+#define __GPIO_H__
+
+#define MOTOR0_GPIO_CLK  			RCU_GPIOA
+#define MOTOR0_GPIO_GROUP 		GPIOA
+#define MOTOR0_U_CTR_PIN  		GPIO_PIN_8
+#define MOTOR0_V_CTR_PIN  		GPIO_PIN_9
+#define MOTOR0_W_CTR_PIN  		GPIO_PIN_10
+	
+#define MOTOR1_GPIO_CLK  			RCU_GPIOA
+#define MOTOR1_GPIO_GROUP 		GPIOA
+#define MOTOR1_U_CTR_PIN   		GPIO_PIN_1
+#define MOTOR1_V_CTR_PIN   		GPIO_PIN_2
+#define MOTOR1_W_CTR_PIN  		GPIO_PIN_3
+
+#define MOTOR0_EN_GPIO_CLK 		RCU_GPIOE
+#define MOTOR0_EN_GPIO_GROUP 	GPIOE 
+#define MOTOR0_EN_CTL_PIN     GPIO_PIN_6
+
+#define MOTOR1_EN_GPIO_CLK 		RCU_GPIOE
+#define MOTOR1_EN_GPIO_GROUP 	GPIOE 
+#define MOTOR1_EN_CTL_PIN     GPIO_PIN_6
+
+void gpio_config(void);
+
+#endif
+
