@@ -74,11 +74,11 @@ int main(void)
     timer_config_init();
 
     DFOC_Vbus(9);
-    DFOC_M0_SET_VEL_PID(0.0001,0.01,0,0);   	//设置速度的PID值
+//    DFOC_M0_SET_VEL_PID(0.0001,0.01,0,0);   	//设置速度的PID值
 //		DFOC_M0_SET_ANGLE_PID(0.1,0.01,0,0);				//设置速度的PID值
-//    Init_Set_PID_Para(POSITION_MODEL, 0.8,0.1,0.1,0);
+    Init_Set_PID_Para(POSITION_MODEL, 0.8,0.1,0.1,0);
 //		DFOC_alignSensor(Motor_PP, 1);
-//    DFOC_alignSensor_1(Motor_PP, 1);
+    DFOC_alignSensor_1(Motor_PP, 1);
 		moving_avg_init(&Hall_A_Val);
 		moving_avg_init(&Hall_B_Val);
 		/* 逆时针旋转 10 rad/s */
@@ -105,14 +105,14 @@ int main(void)
             dma_transfer_complete = 0; // 清除标志
             
             // 处理 adc_value 数组中的数据
-            S0.raw_a = hall_a_raw = (adc_value[0] & 0xFFFF);
-            S0.raw_b = hall_b_raw = ((adc_value[0] >> 16) & 0xFFFF);
-//					  S0.raw_a = (float)moving_avg_update(&Hall_A_Val, hall_a_raw);
-//					  S0.raw_b = (float)moving_avg_update(&Hall_B_Val, hall_b_raw);
+            hall_a_raw = (adc_value[0] & 0xFFFF);
+            hall_b_raw = ((adc_value[0] >> 16) & 0xFFFF);
+					  S0.raw_a = (float)moving_avg_update(&Hall_A_Val, hall_a_raw);
+					  S0.raw_b = (float)moving_avg_update(&Hall_B_Val, hall_b_raw);
 //					  printf("\r\n hall_a_raw = %d S0.raw_a = %f\r\n", hall_a_raw, S0.raw_a);
-					  DFOC_M0_setVelocity(1, set_speed);
+//					  DFOC_M0_setVelocity(0, set_speed);
 //					  DFOC_M0_set_Force_Angle(0, set_speed);
-//					  DFOC_M0_set_Velocity_Angle(1, set_speed);
+					  DFOC_M0_set_Velocity_Angle(0, set_speed);
 #if 0            
             // 运行你的 FOC 控制算法...
             get_electrical_angle_unwrapped(&S0);

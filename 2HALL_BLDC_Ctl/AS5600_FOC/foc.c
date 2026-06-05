@@ -23,74 +23,74 @@ int8_t current_direction = 1;           /* 1=逆时针, -1=顺时针 */
 float _electricalAngle_speed(void);
 
 
-///* 修改 _electricalAngle_speed 函数 */
-//float _electricalAngle_speed_1(void)
-//{
-//    float elect_angle = 0;
-//    float mech_angle = Sensor_BLDC_GetElectricityAngle(&S0);
-//    float zero_angle;
-//    
-//    /* 根据当前方向选择对应的零点 */
-//    if (Sensor_DIR == 1) {
-//        zero_angle = zero_electric_angle_ccw;  /* 逆时针用逆时针零点 */
-//    } else {
-//        zero_angle = zero_electric_angle_cw;    /* 顺时针用顺时针零点 */
-//    }
-//    
-//    elect_angle = _normalizeAngle_speed((float)(Sensor_DIR) * mech_angle - zero_angle);
-//    return elect_angle;
-//}
+/* 修改 _electricalAngle_speed 函数 */
+float _electricalAngle_speed(void)
+{
+    float elect_angle = 0;
+    float temp_elect_angle = Sensor_BLDC_GetElectricityAngle(&S0);
+    float zero_angle;
+    
+    /* 根据当前方向选择对应的零点 */
+    if (Sensor_DIR == 1) {
+        zero_angle = zero_electric_angle_ccw;  /* 逆时针用逆时针零点 */
+    } else {
+        zero_angle = zero_electric_angle_cw;    /* 顺时针用顺时针零点 */
+    }
+    
+    elect_angle = _normalizeAngle_speed((float)(Sensor_DIR) * temp_elect_angle - zero_angle);
+    return elect_angle;
+}
 
-///* 修改校准函数：为两个方向分别校准 */
-//void DFOC_alignSensor(int _PP, int _DIR)
-//{
-//    Motor_PP = _PP;
-//    
-//    /* ========== 校准逆时针方向 (Sensor_DIR = 1) ========== */
-//    Sensor_DIR = 1;
-//    printf("Calibrating CCW direction...\n");
-//    
-//    setTorque(3.0f, _3PI_2);
-//    delay_1ms(3000);
-//    zero_electric_angle_ccw = _electricalAngle_speed();
-//    printf("CCW zero angle: %.3f rad\n", zero_electric_angle_ccw);
-//    setTorque(0.0f, _3PI_2);
-//    delay_1ms(500);
-//    
-//    /* ========== 校准顺时针方向 (Sensor_DIR = -1) ========== */
-//    Sensor_DIR = -1;
-//    printf("Calibrating CW direction...\n");
-//    
-//    setTorque(3.0f, _3PI_2);
-//    delay_1ms(3000);
-//    zero_electric_angle_cw = _electricalAngle_speed();
-//    printf("CW zero angle: %.3f rad\n", zero_electric_angle_cw);
-//    setTorque(0.0f, _3PI_2);
-//    delay_1ms(500);
-//    
-//    /* 恢复默认方向 */
-//    Sensor_DIR = _DIR;
-//    printf("Alignment complete!\n");
-//}
+/* 修改校准函数：为两个方向分别校准 */
+void DFOC_alignSensor(int _PP, int _DIR)
+{
+    Motor_PP = _PP;
+    
+    /* ========== 校准逆时针方向 (Sensor_DIR = 1) ========== */
+    Sensor_DIR = 1;
+    printf("Calibrating CCW direction...\n");
+    
+    setTorque(3.0f, _3PI_2);
+    delay_1ms(3000);
+    zero_electric_angle_ccw = _electricalAngle_speed();
+    printf("CCW zero angle: %.3f rad\n", zero_electric_angle_ccw);
+    setTorque(0.0f, _3PI_2);
+    delay_1ms(500);
+    
+    /* ========== 校准顺时针方向 (Sensor_DIR = -1) ========== */
+    Sensor_DIR = -1;
+    printf("Calibrating CW direction...\n");
+    
+    setTorque(3.0f, _3PI_2);
+    delay_1ms(3000);
+    zero_electric_angle_cw = _electricalAngle_speed();
+    printf("CW zero angle: %.3f rad\n", zero_electric_angle_cw);
+    setTorque(0.0f, _3PI_2);
+    delay_1ms(500);
+    
+    /* 恢复默认方向 */
+    Sensor_DIR = _DIR;
+    printf("Alignment complete!\n");
+}
 
-///* 新增：动态切换方向函数 */
-//void switch_motor_direction(int8_t new_dir)
-//{
-//    if (new_dir == Sensor_DIR) return;
-//    
-//    /* 先停止电机 */
-//    setTorque(0.0f, _electricalAngle_speed());
-//    delay_1ms(100);
-//    
-//    /* 切换方向 */
-//    Sensor_DIR = new_dir;
-//    
-//    /* 可选：重新初始化速度环 PID 积分，防止过冲 */
-//    PIDController_Init(&vel_loop_M0, vel_loop_M0.P, vel_loop_M0.I, vel_loop_M0.D, 
-//                       vel_loop_M0.output_ramp, vel_loop_M0.limit);
-//    
-//    printf("Direction switched to: %s\n", new_dir == 1 ? "CCW" : "CW");
-//}
+/* 新增：动态切换方向函数 */
+void switch_motor_direction(int8_t new_dir)
+{
+    if (new_dir == Sensor_DIR) return;
+    
+    /* 先停止电机 */
+    setTorque(0.0f, _electricalAngle_speed());
+    delay_1ms(100);
+    
+    /* 切换方向 */
+    Sensor_DIR = new_dir;
+    
+    /* 可选：重新初始化速度环 PID 积分，防止过冲 */
+    PIDController_Init(&vel_loop_M0, vel_loop_M0.P, vel_loop_M0.I, vel_loop_M0.D, 
+                       vel_loop_M0.output_ramp, vel_loop_M0.limit);
+    
+    printf("Direction switched to: %s\n", new_dir == 1 ? "CCW" : "CW");
+}
 
 
 uint16_t g_print_buffer[2][MAX_RECORD_BUFF] = {0, 0};
@@ -175,7 +175,7 @@ float _normalizeAngle_speed(float angle)
 }
 
 /* ????? */
-float _electricalAngle_speed(void)
+float _electricalAngle_speed_1(void)
 {
 	 float elect_angle = 0;
 #ifdef HALL_SENSOR
@@ -399,17 +399,37 @@ float DFOC_M0_Velocity(int8_t dir)
 /*==================== ???? ====================*/
 void DFOC_M0_set_Velocity_Angle(int8_t dir, float Target)
 {
+		float angle_error, vel_target, vel_error, torque;
+	
+		if(dir == 1) 
+		{
 #ifdef SET_ANGLE_360
-	  float angle_error = Target * 360 - DFOC_M0_Angle(dir);
+				float angle_error = Target * 360 - DFOC_M0_Angle(dir);
 #else
-    float angle_error = (Target - DFOC_M0_Angle(dir));
+				angle_error = (Target - DFOC_M0_Angle(dir));
 #endif
-    float vel_target = DFOC_M0_ANGLE_PID(angle_error);
-    float vel_error = vel_target - DFOC_M0_Velocity(dir);
-    float torque = DFOC_M0_VEL_PID(vel_error);
-    RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, angle_error, vel_target);
+		}
+		else
+		{
+#ifdef SET_ANGLE_360
+				float angle_error = DFOC_M0_Angle(dir) - Target * 360;
+#else
+				angle_error = (DFOC_M0_Angle(dir) - Target);
+#endif
+		}
+    vel_target = DFOC_M0_ANGLE_PID(angle_error);
+	  if(dir == 1) 
+		{
+				vel_error = vel_target - DFOC_M0_Velocity(dir);
+		}
+		else
+		{
+				vel_error = DFOC_M0_Velocity(dir) - vel_target;
+		}
+    torque = DFOC_M0_VEL_PID(vel_error);
+//    RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, angle_error, vel_target);
 //	  RecordPrintLog(1, MAX_RECORD_BUFF, g_start_flag, vel_error, torque);
-    setTorque(torque, _electricalAngle_speed());
+    setTorque(vel_target, _electricalAngle_speed());
 }
 //速度闭环
 void DFOC_M0_setVelocity(int8_t dir, float Target)
@@ -417,9 +437,9 @@ void DFOC_M0_setVelocity(int8_t dir, float Target)
 	  float vel_error = 0, torque = 0;
 	
 	  /* 先切换方向（如果需要）*/
-//    if (dir != Sensor_DIR) {
-//        switch_motor_direction(dir);
-//    }
+    if (dir != Sensor_DIR) {
+        switch_motor_direction(dir);
+    }
 //		vel_error = (Target - DFOC_M0_Velocity(dir));
 #if 1
 	  if(dir == 1) {

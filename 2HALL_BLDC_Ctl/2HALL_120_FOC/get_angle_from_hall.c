@@ -1,7 +1,7 @@
 #include "includes.h"
 
 
-#if 0
+#if 1
 //将电角度转换为机械角度
 float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
 {
@@ -18,11 +18,11 @@ float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
 			  //这是电机顺时针转动的条件
 			  if(sensor->elect_angle_rotations > 0)
 				{
-						sensor->angle_prev = -sensor->vel_elect_angle_prev/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
+						sensor->angle_prev = sensor->vel_elect_angle_prev/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
 				}
 				else //这是电机逆时针转动越界时的条件
 				{
-						sensor->angle_prev = (_2PI-sensor->vel_elect_angle_prev)/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
+						sensor->angle_prev = -(_2PI-sensor->vel_elect_angle_prev)/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
 				}
 		}
 		else
@@ -30,11 +30,11 @@ float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
 			  //这是电机顺时针转动越界时的条件
 			  if(sensor->elect_angle_rotations >= 0)
 				{
-						sensor->angle_prev = -sensor->vel_elect_angle_prev/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
+						sensor->angle_prev = sensor->vel_elect_angle_prev/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
 				}
 				else //这是电机逆时针转动的条件
 				{
-						sensor->angle_prev = (_2PI-sensor->vel_elect_angle_prev)/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
+						sensor->angle_prev = -(_2PI-sensor->vel_elect_angle_prev)/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
 				}
 //				sensor->angle_prev = (_2PI-angle)/Motor_PP + _PI/2 * (sensor->elect_angle_rotations % Motor_PP);  //对4取余
 		}
@@ -42,7 +42,7 @@ float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
 		sensor->last_unwrapped = sensor->angle_prev + sensor->full_rotations * _2PI;
 //		RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, sensor->vel_elect_angle_prev, sensor->angle_prev);
 		RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, sensor->full_rotations, sensor->last_unwrapped);
-		printf("vel_elect_angle_prev = %f, angle_prev = %f, elect_angle_rotations = %d, last_unwrapped = %f \r\n", sensor->vel_elect_angle_prev, sensor->angle_prev, sensor->elect_angle_rotations, sensor->last_unwrapped);
+//		printf("vel_elect_angle_prev = %f, angle_prev = %f, elect_angle_rotations = %d, last_unwrapped = %f \r\n", sensor->vel_elect_angle_prev, sensor->angle_prev, sensor->elect_angle_rotations, sensor->last_unwrapped);
 		
 		return sensor->angle_prev;
 }
