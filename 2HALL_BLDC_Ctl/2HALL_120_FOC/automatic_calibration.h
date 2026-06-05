@@ -3,6 +3,10 @@
 
 #include "gd32f30x.h"
 
+/* 将角度转换为弧度 */
+#define PHASE_DIFF_DEGREE 53.81f
+#define PHASE_DIFF_RAD (PHASE_DIFF_DEGREE * _PI / 180.0f)  // ≈ 0.939 rad
+
 // automatic_calibration.h
 typedef struct {
     float offset;       /* 直流偏移量 */
@@ -14,15 +18,8 @@ typedef struct {
     uint8_t calibrated;
 } HallCalibration;
 
-/* 角度展开结构体 */
-typedef struct {
-    float last_angle;       /* 上一次角度 (0-2π) */
-    float last_unwrapped;   /* 上一次展开后的角度 */
-    int32_t rotations;      /* 旋转圈数 */
-} AngleUnwrapper;
-
-extern HallCalibration hall_a_cal;
-extern HallCalibration hall_b_cal;
+extern HallCalibration g_Hall_A_Cal;
+extern HallCalibration g_Hall_B_Cal;
 
 void hall_calibration_start(HallCalibration *cal);
 void hall_calibration_update(HallCalibration *cal, float value);

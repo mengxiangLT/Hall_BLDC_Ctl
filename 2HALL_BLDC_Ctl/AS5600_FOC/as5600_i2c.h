@@ -2,8 +2,9 @@
 #define __AS5600_I2C_H__
 
 #include "gd32f30x.h"
+#include "includes.h"
 
-#define SET_ANGLE_360
+//#define SET_ANGLE_360
 
 //i2c命令的等待超时参数
 #define MAX_TIMEOUT		1000
@@ -31,17 +32,6 @@
 #define _2PI 6.28318530718f
 
 
-/* AS5600 ??? */
-typedef struct {
-    int Mot_Num;                    /* ???? */
-    float angle_prev;               /* ?????? */
-    uint32_t angle_prev_ts;         /* ?????????(??) */
-    float vel_angle_prev;           /* ????????? */
-    uint32_t vel_angle_prev_ts;     /* ????????? */
-    int32_t full_rotations;         /* ????? */
-    int32_t vel_full_rotations;     /* ??????? */
-} Sensor_AS5600;
-
 
 /* AS5600 ???? */
 void as5600_i2c_init(void);
@@ -51,13 +41,13 @@ uint8_t as5600_read_status(void);        /* ???? */
 uint8_t as5600_check_magnet(void);       /* ??????? */
 
 /* ???? */
-void Sensor_AS5600_Init(Sensor_AS5600 *sensor, int Mot_Num);
-void Sensor_AS5600_SensorInit(Sensor_AS5600 *sensor);
-double Sensor_AS5600_GetSensorAngle(Sensor_AS5600 *sensor);
-void Sensor_AS5600_Update(Sensor_AS5600 *sensor);
-float Sensor_AS5600_GetMechanicalAngle(Sensor_AS5600 *sensor);
-float Sensor_AS5600_GetAngle(Sensor_AS5600 *sensor);
-float Sensor_AS5600_GetVelocity(Sensor_AS5600 *sensor);
+void Sensor_AS5600_Init(Sensor_BLDC_Para *sensor, int Mot_Num);
+void Sensor_AS5600_SensorInit(Sensor_BLDC_Para *sensor);
+double Sensor_AS5600_GetSensorAngle(Sensor_BLDC_Para *sensor);
+void Sensor_AS5600_Update(Sensor_BLDC_Para *sensor);
+float Sensor_AS5600_GetMechanicalAngle(Sensor_BLDC_Para *sensor);
+float Sensor_AS5600_GetAngle(Sensor_BLDC_Para *sensor);
+float Sensor_AS5600_GetVelocity(Sensor_BLDC_Para *sensor);
 
 #endif
 

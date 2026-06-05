@@ -22,16 +22,19 @@ Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
 F:\project\PR262\GD32F30x\2HALL_BLDC_Ctl\2HALL_BLDC_Ctl\MDK-ARM\GD32303C_EVAL.uvprojx
-Project File Date:  05/29/2026
+Project File Date:  06/04/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'F:\software\keil5\keil\ARM\ARMCC\Bin'
 Build target 'GD32F303C_EVAL'
-compiling main.c...
+compiling get_angle_from_hall.c...
+..\2HALL_120_FOC\get_angle_from_hall.c(126): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	  if(fabsf(delta) > (float)(_2PI * 0.8))
+..\2HALL_120_FOC\get_angle_from_hall.c: 1 warning, 0 errors
 linking...
-Program Size: Code=13100 RO-data=368 RW-data=204 ZI-data=25116  
+Program Size: Code=16972 RO-data=368 RW-data=232 ZI-data=37568  
 FromELF: creating hex file...
-".\output\Project.axf" - 0 Error(s), 0 Warning(s).
+".\output\Project.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -54,7 +57,7 @@ Package Vendor: GigaDevice
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.2.0
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

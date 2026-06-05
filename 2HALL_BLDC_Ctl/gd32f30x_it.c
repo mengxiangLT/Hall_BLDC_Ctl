@@ -176,43 +176,4 @@ void SysTick_Handler(void)
 	  sysTickUptime++;
 }
 
-/* 全局变量 */
-extern volatile float hall_angle;
-extern volatile uint8_t angle_ready;
 
-
-#if 0
-/* ADC中断服务函数（采样完成时触发）*/
-void ADC0_IRQHandler(void)
-{
-    static uint8_t sample_phase = 0;
-    
-    if (adc_flag_get(ADC0, ADC_FLAG_EOC)) {
-        uint16_t value = adc_regular_data_read(ADC0);
-        
-        /* 交替采样两个通道 */
-        if (sample_phase == 0) {
-            hall_a_raw = value;
-            sample_phase = 1;
-            /* 切换到通道B */
-            adc_regular_channel_config(ADC0, 0, HALL_B_ADC_CH, ADC_SAMPLETIME_1POINT5);
-        } else {
-            hall_b_raw = value;
-            sample_phase = 0;
-            /* 切换回通道A */
-            adc_regular_channel_config(ADC0, 0, HALL_A_ADC_CH, ADC_SAMPLETIME_1POINT5);
-            
-//            /* 计算角度（在中断中执行，或设置标志在主循环中计算）*/
-//            hall_angle = get_angle_from_120deg(
-//                (float)hall_a_raw, 
-//                (float)hall_b_raw,
-//                &hall_a_cal, 
-//                &hall_b_cal
-//            );
-            angle_ready = 1;
-        }
-        
-        adc_flag_clear(ADC0, ADC_FLAG_EOC);
-    }
-}
-#endif

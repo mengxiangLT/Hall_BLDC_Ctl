@@ -362,7 +362,7 @@ uint8_t as5600_check_magnet(void)
 
 #if 0
 /* 磁传感器的精度是4096(12位,0-4095)*/
-static uint16_t read_raw_angle(Sensor_AS5600 *sensor)
+static uint16_t read_raw_angle(Sensor_BLDC_Para *sensor)
 {
     uint16_t buf;
     uint16_t raw_value;
@@ -393,7 +393,7 @@ static uint16_t read_raw_angle(Sensor_AS5600 *sensor)
 #endif
 
 /* 将磁传感器的角度值转换为弧度值(0-2PI)*/
-double Sensor_AS5600_GetSensorAngle(Sensor_AS5600 *sensor)
+double Sensor_AS5600_GetSensorAngle(Sensor_BLDC_Para *sensor)
 {
 #ifdef SET_ANGLE_360
 			return (double)as5600_read_angle_degree();
@@ -405,7 +405,7 @@ double Sensor_AS5600_GetSensorAngle(Sensor_AS5600 *sensor)
 }
 
 /* 初始化传感器的参数 */
-void Sensor_AS5600_Init(Sensor_AS5600 *sensor, int Mot_Num)
+void Sensor_AS5600_Init(Sensor_BLDC_Para *sensor, int Mot_Num)
 {
     sensor->Mot_Num = Mot_Num;
     sensor->angle_prev = 0.0f;
@@ -417,7 +417,7 @@ void Sensor_AS5600_Init(Sensor_AS5600 *sensor, int Mot_Num)
 }
 
 /* 初始化传感器参数值 */
-void Sensor_AS5600_SensorInit(Sensor_AS5600 *sensor)
+void Sensor_AS5600_SensorInit(Sensor_BLDC_Para *sensor)
 {
 //    Sensor_AS5600_GetSensorAngle(sensor);
     sensor->vel_angle_prev = Sensor_AS5600_GetSensorAngle(sensor);
@@ -429,7 +429,7 @@ void Sensor_AS5600_SensorInit(Sensor_AS5600 *sensor)
 }
 
 /* 根据磁编码器获取的角度值，算出电机转过的圈数 */
-void Sensor_AS5600_Update(Sensor_AS5600 *sensor)
+void Sensor_AS5600_Update(Sensor_BLDC_Para *sensor)
 {
     float val = Sensor_AS5600_GetSensorAngle(sensor);
     float d_angle;
@@ -459,7 +459,7 @@ void Sensor_AS5600_Update(Sensor_AS5600 *sensor)
 }
 
 /* 获取当前转过的角度值(0-2PI)*/
-float Sensor_AS5600_GetMechanicalAngle(Sensor_AS5600 *sensor)
+float Sensor_AS5600_GetMechanicalAngle(Sensor_BLDC_Para *sensor)
 {
     return sensor->angle_prev;
 }
@@ -467,7 +467,7 @@ float Sensor_AS5600_GetMechanicalAngle(Sensor_AS5600 *sensor)
 /* 将磁传感器检测到的转动圈数转换为角度的弧度值，再加上未转满一圈的部分
  *The number of rotations detected by the magnetic sensor is converted into radians, and the portion that did not complete one rotation is added.
 */
-float Sensor_AS5600_GetAngle(Sensor_AS5600 *sensor)
+float Sensor_AS5600_GetAngle(Sensor_BLDC_Para *sensor)
 {
 //	  Sensor_AS5600_Update(sensor);
 #ifdef SET_ANGLE_360
@@ -478,7 +478,7 @@ float Sensor_AS5600_GetAngle(Sensor_AS5600 *sensor)
 }
 
 /* 获取转子的速度 */
-float Sensor_AS5600_GetVelocity(Sensor_AS5600 *sensor)
+float Sensor_AS5600_GetVelocity(Sensor_BLDC_Para *sensor)
 {
     float Ts;
     float vel;

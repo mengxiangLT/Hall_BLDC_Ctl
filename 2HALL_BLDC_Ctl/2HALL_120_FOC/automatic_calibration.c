@@ -2,11 +2,8 @@
 
 
 /* 全局校准结构体 */
-HallCalibration hall_a_cal;
-HallCalibration hall_b_cal;
-/* 将角度转换为弧度 */
-#define PHASE_DIFF_DEGREE 53.81f
-#define PHASE_DIFF_RAD (PHASE_DIFF_DEGREE * PI / 180.0f)  // ≈ 0.939 rad
+HallCalibration g_Hall_A_Cal;
+HallCalibration g_Hall_B_Cal;
 
 /* 开始校准 */
 void hall_calibration_start(HallCalibration *cal)
@@ -15,21 +12,21 @@ void hall_calibration_start(HallCalibration *cal)
     cal->min_val = 1e6;
 //    cal->calibrated = 0;
 //	  cal->pole_pairs = pole_pairs; // 设置极对数，例如对于7对极的云台电机，这里就填 7.0f
-//    hall_a_cal.offset = 2036.0;
-//    hall_a_cal.amplitude = 1258.5;
-	  hall_a_cal.offset = 2036.0;
-		hall_a_cal.amplitude = 1258.0;
-    hall_a_cal.pole_pairs = 4;
-    hall_a_cal.phase_diff = PHASE_DIFF_RAD;  // 设置你测量的相位差
-    hall_a_cal.calibrated = 1;
+//    g_Hall_A_Cal.offset = 2036.0;
+//    g_Hall_A_Cal.amplitude = 1258.5;
+	  g_Hall_A_Cal.offset = 2036.0;
+		g_Hall_A_Cal.amplitude = 1258.0;
+    g_Hall_A_Cal.pole_pairs = POLE_PAIRS;
+    g_Hall_A_Cal.phase_diff = PHASE_DIFF_RAD;  // 设置你测量的相位差
+    g_Hall_A_Cal.calibrated = 1;
 
-//    hall_b_cal.offset = 2039.0;
-//    hall_b_cal.amplitude = 1304.0;
-	  hall_b_cal.offset = 2040.0;
-    hall_b_cal.amplitude = 1302.0;
-    hall_b_cal.pole_pairs = 4;
-    hall_b_cal.phase_diff = PHASE_DIFF_RAD;  // 使用相同的值
-    hall_b_cal.calibrated = 1;
+//    g_Hall_B_Cal.offset = 2039.0;
+//    g_Hall_B_Cal.amplitude = 1304.0;
+	  g_Hall_B_Cal.offset = 2040.0;
+    g_Hall_B_Cal.amplitude = 1302.0;
+    g_Hall_B_Cal.pole_pairs = POLE_PAIRS;
+    g_Hall_B_Cal.phase_diff = PHASE_DIFF_RAD;  // 使用相同的值
+    g_Hall_B_Cal.calibrated = 1;
 }
 
 /* 更新校准数据（每次采样时调用）*/
@@ -80,23 +77,23 @@ void hall_calibration_processing(void)
 		}
     else if (calibration_mode == 2) {
         /* 校准模式：收集数据 */
-        hall_calibration_update(&hall_a_cal, hall_a_raw);
-        hall_calibration_update(&hall_b_cal, hall_b_raw);
+        hall_calibration_update(&g_Hall_A_Cal, hall_a_raw);
+        hall_calibration_update(&g_Hall_B_Cal, hall_b_raw);
 			  if(hall_a_raw != 0)
 						sample_count++;
         
         /* 假设采样5000次（约转几圈）后结束校准 */
         if (sample_count >= 10000) {
 					  sample_count = 0;
-            hall_calibration_finish(&hall_a_cal);
-            hall_calibration_finish(&hall_b_cal);
+            hall_calibration_finish(&g_Hall_A_Cal);
+            hall_calibration_finish(&g_Hall_B_Cal);
             calibration_mode = 0;
             
             printf("Calibration complete!\n");
             printf("Hall A: max_val = %f, min_val = %f, offset=%f, amplitude=%f\n", 
-                   hall_a_cal.max_val, hall_a_cal.min_val, hall_a_cal.offset, hall_a_cal.amplitude);
+                   g_Hall_A_Cal.max_val, g_Hall_A_Cal.min_val, g_Hall_A_Cal.offset, g_Hall_A_Cal.amplitude);
             printf("Hall B: max_val = %f, min_val = %f, offset=%.2f, amplitude=%.2f\n", 
-                   hall_b_cal.max_val, hall_b_cal.min_val, hall_b_cal.offset, hall_b_cal.amplitude);
+                   g_Hall_B_Cal.max_val, g_Hall_B_Cal.min_val, g_Hall_B_Cal.offset, g_Hall_B_Cal.amplitude);
         }
     } 
 }

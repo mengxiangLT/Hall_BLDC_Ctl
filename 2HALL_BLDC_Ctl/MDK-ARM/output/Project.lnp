@@ -37,8 +37,12 @@
 ".\output\average_filter.o"
 ".\output\adc.o"
 ".\output\adc_timer.o"
-".\output\foc_control.o"
 ".\output\get_angle_from_hall.o"
+".\output\as5600_i2c.o"
+".\output\foc.o"
+".\output\lowpass_filter.o"
+".\output\pid.o"
+".\output\sensor_angle_update.o"
 --library_type=microlib --strict --scatter ".\output\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

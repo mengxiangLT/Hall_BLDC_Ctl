@@ -9,6 +9,9 @@
 #define _3PI_2 4.71238898038f
 #define PI 3.14159265359f
 
+#define SPEED_MODEL 0
+#define POSITION_MODEL 1
+
 /* ?????? */
 extern float voltage_power_supply_speed;
 extern float Ualpha_speed, Ubeta_speed, Ua_speed, Ub_speed, Uc_speed;
@@ -24,12 +27,17 @@ extern PIDController vel_loop_M0;
 extern PIDController angle_loop_M0;
 
 /* AS5600 ????? */
-extern Sensor_AS5600 S0;
+extern Sensor_BLDC_Para S0;
+
+extern int Motor_PP;
 
 /* ???? */
+void Openloop_Start(float target_vel_rad_s, float duration_sec);
 void DFOC_Vbus(float power_supply);
+void DFOC_alignSensor_1(int _PP, int _DIR);
 void DFOC_alignSensor(int _PP, int _DIR);
 float _normalizeAngle_speed(float angle);
+//float _electricalAngle_speed_1(void);
 float _electricalAngle_speed(void);
 void setPwm_speed(float Ua_speed, float Ub_speed, float Uc_speed);
 void setTorque(float Uq, float angle_el);
@@ -37,6 +45,7 @@ void setTorque(float Uq, float angle_el);
 /* PID ???? */
 void DFOC_M0_SET_VEL_PID(float P, float I, float D, float ramp);
 void DFOC_M0_SET_ANGLE_PID(float P, float I, float D, float ramp);
+void Init_Set_PID_Para(uint8_t model, float kp, float ip, float dp, float ramp);
 float DFOC_M0_VEL_PID(float error);
 float DFOC_M0_ANGLE_PID(float error);
 

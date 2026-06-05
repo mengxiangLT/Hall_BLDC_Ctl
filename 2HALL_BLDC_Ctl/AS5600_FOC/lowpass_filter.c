@@ -27,7 +27,9 @@ float LowPassFilter_Update(LowPassFilter *filter, float x, int8_t dir)
         filter->timestamp_prev = timestamp;
         return x;
     }
-#if 1
+#ifdef HALL_SENSOR
+
+#else		
 //		if((dir == 1 && x <= 11) || (dir == -1 && x >= -11)){
 		if(dir == 1 && x <= 13){
 			  filter->y_prev = 0;
