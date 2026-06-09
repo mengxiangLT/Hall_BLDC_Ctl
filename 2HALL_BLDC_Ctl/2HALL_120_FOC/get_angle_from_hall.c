@@ -3,10 +3,8 @@
 
 #if 1
 //将电角度转换为机械角度
-float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
+float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor, float delta)
 {
-		float delta;
-	
 		//霍尔值转换的角度是电角度，所以算机械角度时需要除以极对数
 		sensor->full_rotations = sensor->elect_angle_rotations/Motor_PP;
 		
@@ -40,7 +38,7 @@ float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
 		}
 		//如果圈数是反转的，那么需要将读取的角度取反和圈数相加
 		sensor->last_unwrapped = sensor->angle_prev + sensor->full_rotations * _2PI;
-//		RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, sensor->vel_elect_angle_prev, sensor->angle_prev);
+		RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, sensor->vel_elect_angle_prev, sensor->angle_prev);
 		RecordPrintLog(0, MAX_RECORD_BUFF, g_start_flag, sensor->full_rotations, sensor->last_unwrapped);
 //		printf("vel_elect_angle_prev = %f, angle_prev = %f, elect_angle_rotations = %d, last_unwrapped = %f \r\n", sensor->vel_elect_angle_prev, sensor->angle_prev, sensor->elect_angle_rotations, sensor->last_unwrapped);
 		
@@ -65,14 +63,14 @@ float angle_unwrapper_update(Sensor_BLDC_Para *sensor, float angle)
 		}
 		//将当前的电角度记录下来，用于下次计算
     sensor->vel_elect_angle_prev = angle;
-		Elect_Angle_Conversion_Mechanical_Angle(sensor);
+		Elect_Angle_Conversion_Mechanical_Angle(sensor, delta);
 
     return sensor->angle_prev;
 }
 
 #else
 //将电角度转换为机械角度
-float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor)
+float Elect_Angle_Conversion_Mechanical_Angle(Sensor_BLDC_Para *sensor, float delta)
 {
 		float delta;
 	
@@ -133,7 +131,7 @@ float angle_unwrapper_update(Sensor_BLDC_Para *sensor, float angle)
 		}
 		//将当前的电角度记录下来，用于下次计算
     sensor->vel_elect_angle_prev = angle;
-		Elect_Angle_Conversion_Mechanical_Angle(sensor);
+		Elect_Angle_Conversion_Mechanical_Angle(sensor, delta);
 
     return sensor->angle_prev;
 }
