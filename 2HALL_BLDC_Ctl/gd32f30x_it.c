@@ -104,9 +104,9 @@ void UsageFault_Handler(void)
     \param[out] none
     \retval     none
 */
-void SVC_Handler(void)
-{
-}
+//void SVC_Handler(void)
+//{
+//}
 
 /*!
     \brief      this function handles DebugMon exception
@@ -124,9 +124,9 @@ void DebugMon_Handler(void)
     \param[out] none
     \retval     none
 */
-void PendSV_Handler(void)
-{
-}
+//void PendSV_Handler(void)
+//{
+//}
 
 /*!
     \brief      this function handles USART0 exception
@@ -134,13 +134,25 @@ void PendSV_Handler(void)
     \param[out] none
     \retval     none
 */
+/* 定义全局Pelco-D环形队列 */
+PelcoD_RingBuffer g_pelco_ring;
+extern ViscaReceiver g_visca_receiver;
+
+
 void USART0_IRQHandler(void)
 {
     if(RESET != usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE)){
         /* read one byte from the receive data register */
-        rx_buffer[rx_counter++] = (uint8_t)usart_data_receive(USART0);
-			  if(rx_counter >= 2)
-			  /* clear the flag of USART0 receive buffer not empty */
+//        rx_buffer[rx_counter++] = (uint8_t)usart_data_receive(USART0);
+//			  if(rx_counter >= 2)
+//			  /* clear the flag of USART0 receive buffer not empty */
+//			  usart_interrupt_flag_clear(USART0, USART_INT_FLAG_RBNE);
+//				uint8_t received_data = usart_data_receive(USART0);
+//        
+//        /* 将接收到的字节压入环形队列（带帧检测） */
+//        pelco_d_ring_push_byte(&g_pelco_ring, received_data);
+				uint8_t data = usart_data_receive(USART0);
+        visca_receive_byte(&g_visca_receiver, data);
 			  usart_interrupt_flag_clear(USART0, USART_INT_FLAG_RBNE);
     }       
 //    if(RESET != usart_interrupt_flag_get(USART0, USART_INT_FLAG_TBE)){
@@ -150,6 +162,43 @@ void USART0_IRQHandler(void)
 //			  usart_interrupt_flag_clear(USART0, USART_INT_FLAG_TC);
 //    }
 }
+
+void USART1_IRQHandler(void)
+{
+    if(RESET != usart_interrupt_flag_get(USART1, USART_INT_FLAG_RBNE)){
+        /* read one byte from the receive data register */
+//        rx_buffer[rx_counter++] = (uint8_t)usart_data_receive(USART0);
+//			  if(rx_counter >= 2)
+//			  /* clear the flag of USART0 receive buffer not empty */
+//			  usart_interrupt_flag_clear(USART0, USART_INT_FLAG_RBNE);
+//				uint8_t received_data = usart_data_receive(USART0);
+//        
+//        /* 将接收到的字节压入环形队列（带帧检测） */
+//        pelco_d_ring_push_byte(&g_pelco_ring, received_data);
+				uint8_t data = usart_data_receive(USART1);
+        visca_receive_byte(&g_visca_receiver, data);
+			  usart_interrupt_flag_clear(USART1, USART_INT_FLAG_RBNE);
+    }  
+}
+
+void USART2_IRQHandler(void)
+{
+    if(RESET != usart_interrupt_flag_get(USART2, USART_INT_FLAG_RBNE)){
+        /* read one byte from the receive data register */
+//        rx_buffer[rx_counter++] = (uint8_t)usart_data_receive(USART0);
+//			  if(rx_counter >= 2)
+//			  /* clear the flag of USART0 receive buffer not empty */
+//			  usart_interrupt_flag_clear(USART0, USART_INT_FLAG_RBNE);
+//				uint8_t received_data = usart_data_receive(USART0);
+//        
+//        /* 将接收到的字节压入环形队列（带帧检测） */
+//        pelco_d_ring_push_byte(&g_pelco_ring, received_data);
+				uint8_t data = usart_data_receive(USART2);
+        visca_receive_byte(&g_visca_receiver, data);
+			  usart_interrupt_flag_clear(USART2, USART_INT_FLAG_RBNE);
+    }  
+}
+
 
 volatile uint8_t dma_transfer_complete = 0;
 
